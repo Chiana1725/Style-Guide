@@ -29,7 +29,7 @@
 
 不要为 0 指明单位，比如使用 margin: 0; 而不是 margin: 0px;。
 
-```
+```css
 /* Bad CSS */
 .selector, .selector-secondary, .selector[type=text] {
     margin: 0px 0px 15px;
@@ -60,7 +60,7 @@ Positioning 处在第一位，因为他可以使一个元素脱离正常文本�
 
 其他属性只在组件内部起作用或者不会对前面两种情况的结果产生影响，所以他们排在后面。
 
-```
+```css
 .declaration-order {
     /* Positioning */
     position: absolute;
@@ -92,11 +92,11 @@ Positioning 处在第一位，因为他可以使一个元素脱离正常文本�
 }
 ```
 
-## Don't use @import
+## 不使用 @import
 
 与`<link>`相比，`@import`较慢，增加额外的页面请求，并可能导致其他不可预见的问题。
 
-```
+```html
 <!-- Use link elements -->
 <link rel="stylesheet" href="core.css">
 
@@ -110,7 +110,7 @@ Positioning 处在第一位，因为他可以使一个元素脱离正常文本�
 
 尽量将媒体查询的位置靠近他们相关的规则。不要将他们一起放到一个独立的样式文件中，或者丢在文档的最底部。这样做只会让大家以后更容易忘记他们。这里是一个典型的案例。
 
-```
+```css
 .element { ... }
 .element-avatar { ... }
 .element-selected { ... }
@@ -126,7 +126,7 @@ Positioning 处在第一位，因为他可以使一个元素脱离正常文本�
 
 当使用厂商前缀属性时，通过缩进使取值垂直对齐以便多行编辑。
 
-```
+```css
 /* Prefixed properties */
 .selector {
     -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.15);
@@ -140,7 +140,7 @@ Positioning 处在第一位，因为他可以使一个元素脱离正常文本�
 
 这样做的关键因素是错误检测 - 例如，一个 CSS 验证程序显示你在 183 行有一个语法错误,如果是一个单条声明的行，那就是他了。在多个声明的情况下，你必须为哪里出错了费下脑子。
 
-```
+```css
 .span1 { width: 60px; }
 .span2 { width: 140px; }
 .span3 { width: 220px; }
@@ -154,12 +154,12 @@ Positioning 处在第一位，因为他可以使一个元素脱离正常文本�
 - margin
 - font
 - background
- -border
- -border-radius
+- border
+- border-radius
 
 大多数情况下，我们并不需要设置属性简写中包含的所有值。例如，HTML 头部只设置上下的 margin，所以如果需要，只设置这两个值。过度使用属性简写往往会导致更混乱的代码，其中包含不必要的重写和意想不到的副作用。
 
-```
+```css
 /* Bad example */
 .element {
     margin: 0 0 10px;
@@ -182,7 +182,7 @@ Positioning 处在第一位，因为他可以使一个元素脱离正常文本�
 
 避免不必要的嵌套。可以进行嵌套，不意味着你应该这样做。只有在需要给父元素增加样式并且同时存在多个子元素时才需要考虑嵌套。
 
-```
+```less
 // Without nesting
 .table > thead > tr > th { … }
 .table > thead > tr > td { … }
@@ -198,19 +198,7 @@ Positioning 处在第一位，因为他可以使一个元素脱离正常文本�
 
 代码是由人来编写和维护的。保证你的代码是描述性的，包含好的注释，并且容易被他人理解。好的代码注释传达上下文和目标。不要简单地重申组件或者 class 名称。
 
-## class 命名
 
-保持 class 命名为全小写，可以使用短划线（不要使用下划线和 camelCase 命名）。短划线应该作为相关类的自然间断。(例如，.btn 和 .btn-danger)。
-
-避免过度使用简写。.btn 可以很好地描述 button，但是 .s 不能代表任何元素。
-
-class 的命名应该尽量短，也要尽量明确。
-
-使用有意义的名称；使用结构化或者作用目标相关，而不是抽象的名称。
-
-命名时使用最近的父节点或者父 class 作为前缀。
-
-使用 .js-* 来表示行为(相对于样式)，但是不要在 CSS 中包含这些 class。
 
 ## 选择器
 
@@ -288,7 +276,8 @@ class 的命名应该尽量短，也要尽量明确。
 　　注册：regsiter  
 　　状态：status  
 　　投票：vote  
-　　合作伙伴：partner  
+　　合作伙伴：partner
+
 ### 导航  
 　　导航：nav  
 　　主导航：mainnav  
@@ -333,7 +322,7 @@ class 的命名应该尽量短，也要尽量明确。
 ### 注意事项::  
 　　1.一律小写;  
 　　2.尽量用英文;  
-　　3.不加中槓和下划线;  
+　　3.不加中杠和下划线;  
 　　4.尽量不缩写，除非一看就明白的单词。  
 ### CSS样式表文件命名  
 　　主要的 master.css  
@@ -347,18 +336,6 @@ class 的命名应该尽量短，也要尽量明确。
 　　补丁 mend.css  
 　　打印 print.css  
 
-# <a name="second">第二部分：编码规范</a>
-转自：https://github.com/ecomfe/spec/blob/master/css-style-guide.md
-
-## 1 前言
-
-
-CSS 作为网页样式的描述语言，在百度一直有着广泛的应用。本文档的目标是使 CSS 代码风格保持一致，容易被理解和被维护。
-
-虽然本文档是针对 CSS 设计的，但是在使用各种 CSS 的预编译器(如 less、sass、stylus 等)时，适用的部分也应尽量遵循本文档的约定。
-
-
-## 2 代码风格
 
 
 ### 2.1 文件
@@ -1325,11 +1302,66 @@ h1 {
 }
 ```
 
-### 8.3 Expression
-
-
-#### [强制] 禁止使用 `Expression`。
+ 
 
 
 
+## 命名
+
+## class 命名
+
+> 保持 class 命名为全小写，可以使用短划线（不要使用下划线和 camelCase 命名）。短划线应该作为相关类的自然间断。(例如，.btn 和 .btn-danger)。
+
+> 避免过度使用简写。.btn 可以很好地描述 button，但是 .s 不能代表任何元素。
+
+> class 的命名应该尽量短，也要尽量明确。
+
+> 使用有意义的名称；使用结构化或者作用目标相关，而不是抽象的名称。
+
+> 命名时使用最近的父节点或者父 class 作为前缀。
+
+> 使用 .js-* 来表示行为(相对于样式)，但是不要在 CSS 中包含这些 class。
+
+> 全小写，使用中横线分割。单词间使用下横线。
+
+```css
+/* bad */
+.header_left      { xxx }
+.headerLeft       { xxx }
+.HeaderLeft       { xxx }
+
+/* good */
+.header-left      { xxx }
+.usa-main         { xxx }
+.new_zealand-main { xxx }
+```
+
+#### id命名 
+> 小驼峰写法，中间无中横线或者下横线。
+
+```css
+/* bad */
+#Logo             { xxx }
+#header_logo      { xxx }
+#header-logo      { xxx }
+#HeaderLogo       { xxx }
+
+/* good */
+#logo             { xxx }
+#headerLogo       { xxx }
+#headerLogoWrap   { xxx }
+```
+
+#### 禁止使用无样式class来hook脚本 
+> 禁止为元素定义无样式的class，而作为调用脚本使用。这样会造成页面class定义冗余以及增加维护难度。请使用元素自带属性或自定义属性实现。
+
+```javascript
+// bad
+<div class="click-alert"></div>
+$('.click-alert').click(function() {});
+
+// good
+<div data-action="clickAlert"></div>
+$('div[data-action="clickAlert"]').click(function() {});
+```
 

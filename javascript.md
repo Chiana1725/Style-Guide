@@ -1262,27 +1262,124 @@ ul.appendChild(docFrag)
 
 好的函数命名与参数命名优于注释。如果你特别喜爱写注释，请使用[JSDoc](http://usejsdoc.org/)中的注释风格。行内注释使用 // 变量 的形式。
 
-<a name="img"></a>
-## 图像
-
-<a name="img-compress"></a>
-### 图像压缩
-
-所有图片必须经过一定的压缩和优化才能发布
-
-<a name="background-image"></a>
-### 背景图
-
-使用PNG格式而不是GIF格式，因为PNG格式色彩更丰富，还能提供更好的压缩比；
-
-<a name="image"></a>
-### 前景图
-
-内容图片建议使用JPG，可以拥有更好地显示效果；装饰性图片使用PNG。
-
-<a name="sprite"></a>
-### Sprite
-
-CSS Sprite是一种将数个图片合成为一张大图的技术（既可以是背景图也可以是前景图），然后通过偏移来进行图像位置选取；CSS Sprite可以减少http请求。
+ 
+ 
 
  
+
+## {JAVASCRIPT}<a name="javascript"></a>
+
+#### 使用严格模式<a name="use-strict"></a>
+
+> 在代码中使用严格模式`'use strict';`，详细参考[javascript严格模式详解](http://www.ruanyifeng.com/blog/2013/01/javascript_strict_mode.html)。
+
+```javascript
+
+'use strict';
+
+arr1 = new Array();          // Error
+
+var arr2 = new Array();      // Success
+
+```
+
+#### 引号<a name="quotation"></a>
+> js全部使用单引号`''`，拼html模板内使用双引号`""`。
+
+```javascript
+
+// bad
+var param = "string";
+var html = head + "<div class='main' data-id='main'></div>" + footer;
+
+// good
+var param = 'string';
+var html = head + '<div class="main" data-id="main"></div>' + footer;
+
+```
+
+#### 行末分号<a name="semicolon"></a>
+> 虽然js行末的分号不是必须的，但是为了代码风格统一，以及避免打包压缩带来的不可预测问题（真正会导致上下行解析出问题的token有5个：括号，方括号，正则开头的斜杠，加号，减号。一行开头是括号或者方括号的时候不添加分号会报错。），每行末的分号不可以省略。
+
+> js分号工具[semi](https://github.com/yyx990803/semi)
+
+```javascript
+
+// bad
+var html = head + "<div class='main' data-id='main'></div>" + footer
+alert(html)
+
+// error
+var num = 1
+(function() {
+    console.log(num)
+})
+var str = 'error message'
+
+// good
+var html = head + '<div class="main" data-id="main"></div>' + footer;
+alert(html);
+
+```
+
+#### 变量命名<a name="js-name"></a>
+> js变量命名使用小驼峰命名法，按照类型进行区分，需要突出属性特征、用途，不要使用不能清晰表达意义的缩略词。
+
+- 普通对象
+
+```javascript
+// bad
+var lib-name = 'sammy.js';
+var lib_name = 'sammy.js';
+var LibName  = 'sammy.js';
+
+// good
+var libName  = 'sammy.js';
+```
+
+- jQuery对象：`统一添加 $ 作为命名前缀，突出为jQuery对象`
+
+```javascript
+// bad
+var slider   = $('#slider');
+var side-bar = $('#sideBar');
+var side_bar = $('#sideBar');
+
+// good
+var $slider  = $('#slider');
+var $sideBar = $('#sideBar');
+```
+
+- 函数：`小驼峰写法，中间无中横线或者下横线`
+
+```javascript
+// bad
+function get_name() {}
+function get-name() {}
+
+// good
+function getName() {}
+```
+
+- 类(构造函数声明)：`首字母需要大写，驼峰写法`
+
+```javascript
+// bad
+function superClass() {}
+
+// good
+function SuperClass() {}
+```
+
+- 缩写词需要准确表明意义
+
+```javascript
+// bad
+var comm = document.getElementById('#comment');
+
+// good
+var comment = document.getElementById('#comment');
+```
+
+#### 缩进<a name="indentation"></a>
+> `空格`与`tap`不能混用。如果使用`空格`，四个`空格`代替一个缩进的位置。如果使用`tap`，请设置一个`tap`代替四个`空格`的位置长度。

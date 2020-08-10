@@ -24,7 +24,7 @@
 
 不要在自动闭合标签结尾处使用斜线 `/` - HTML5 规范 指出他们是可选的。
 
-```
+```html
 <img src="images/logo.png" alt="Company">
 ```
 
@@ -36,27 +36,46 @@
 
 虽然 doctype 不区分大小写，但是按照惯例，doctype 大写
 
-```
+```html
 <!DOCTYPE html>
 ```
 
 ## 语言属性
 
-```
+```html
 <html lang="en">
-
 </html>
+<html lang="zh-CN">
 ```
+解释：
+
+有助于提高页面的可访问性，如：让语音合成工具确定其所应该采用的发音，令翻译工具确定其翻译语言等。
+
 
 ## 字符编码
 
 通过明确声明字符编码，能够确保浏览器快速并容易的判断页面内容的渲染方式。这样
 做的好处是，可以避免在 HTML 中使用字符实体标记（character entity），从而全部与
-文档编码一致（一般采用 UTF-8 编码）。
+文档编码一致（一般采用 UTF-8 编码）。页面必须使用精简形式，明确指定字符编码。指定字符编码的 `meta` 必须是 `head` 的第一个直接子元素。
 
+示例：
+
+```html
+<html>
+    <head>
+        <meta charset="UTF-8">
+        ......
+    </head>
+    <body>
+        ......
+    </body>
+</html>
 ```
-<meta charset="UTF-8">
-```
+#### [建议] `HTML` 文件使用无 `BOM` 的 `UTF-8` 编码。
+
+解释：
+
+`UTF-8` 编码具有更广泛的适应性。`BOM` 在使用程序或工具处理文件时可能造成不必要的干扰。
 
 ## IE 兼容模式
 
@@ -64,21 +83,32 @@ IE 支持通过特定的 <meta> 标签来确定绘制当前页面所应该采用
 的特殊需求，否则最好是设置为 edge mode，从而通知 IE 采用其所支持的最新的模
 式。
 
-```
+```html
 <meta http-equiv="X-UA-Compatible" content="IE=Edge">
 ```
 
-## 响应式
+## 响应式 viewport
 
-```
+#### [建议] 若页面欲对移动设备友好，需指定页面的 `viewport`。
+
+解释：
+
+viewport meta tag 可以设置可视区域的宽度和初始缩放大小，避免在移动设备上出现页面展示不正常。
+
+比如，在页面宽度小于 `980px` 时，若需 iOS 设备友好，应当设置 viewport 的 `width` 值来适应你的页面宽度。同时因为不同移动设备分辨率不同，在设置时，应当使用 `device-width` 和 `device-height` 变量。
+
+另外，为了使 viewport 正常工作，在页面内容样式布局设计上也要做相应调整，如避免绝对定位等。关于 viewport 的更多介绍，可以参见 [Safari Web Content Guide的介绍](https://developer.apple.com/library/mac/documentation/AppleApplications/Reference/SafariWebContent/UsingtheViewport/UsingtheViewport.html#//apple_ref/doc/uid/TP40006509-SW26)
+
+
+```html
 <meta name="viewport" content="width=device-width, initial-scale=1">
 ```
 
 ## 引入 CSS 和 JavaScript
 
-根据 HTML5 规范, 通常在引入 CSS 和 JavaScript 时不需要指明 type，因为 text/css 和 text/javascript 分别是他们的默认值。
+* 根据 HTML5 规范, 通常在引入 CSS 和 JavaScript 时不需要指明 type，因为 text/css 和 text/javascript 分别是他们的默认值。引入 `CSS` 时必须指明 `rel="stylesheet"`
 
-```
+```html
 <!-- External CSS -->
 <link rel="stylesheet" href="code-guide.css">
 
@@ -91,6 +121,52 @@ IE 支持通过特定的 <meta> 标签来确定绘制当前页面所应该采用
 <script src="code-guide.js"></script>
 ```
 
+
+* [建议] 展现定义放置于外部 `CSS` 中，行为定义放置于外部 `JavaScript` 中。
+
+解释：
+
+结构-样式-行为的代码分离，对于提高代码的可阅读性和维护性都有好处。
+
+
+* [建议] 在 `head` 中引入页面需要的所有 `CSS` 资源。
+
+解释：
+
+在页面渲染的过程中，新的CSS可能导致元素的样式重新计算和绘制，页面闪烁。
+
+
+* [建议] `JavaScript` 应当放在页面末尾，或采用异步加载。
+
+解释：
+
+将 `script` 放在页面中间将阻断页面的渲染。出于性能方面的考虑，如非必要，请遵守此条建议。
+
+
+示例：
+
+```html
+<body>
+    <!-- a lot of elements -->
+    <script src="init-behavior.js"></script>
+</body>
+```
+
+
+* [建议] 移动环境或只针对现代浏览器设计的 Web 应用，如果引用外部资源的 `URL` 协议部分与页面相同，建议省略协议前缀。
+
+解释：
+
+使用 `protocol-relative URL` 引入 CSS，在 `IE7/8` 下，会发两次请求。是否使用 `protocol-relative URL` 应充分考虑页面针对的环境。
+
+
+示例：
+
+```html
+<script src="//s1.bdstatic.com/cache/static/jquery-1.10.2.min_f2fb5194.js"></script>
+```
+
+
 ## 实用高于完美
 
 尽量遵循 HTML 标准和语义，但是不应该以浪费实用性作为代价。任何时候都要用尽量小的复杂度和尽量少的标签来解决问题。
@@ -99,7 +175,7 @@ IE 支持通过特定的 <meta> 标签来确定绘制当前页面所应该采用
 
 在编写 HTML 代码时，需要尽量避免多余的父节点。很多时候，需要通过迭代和重构来使 HTML 变得更少。 参考下面的示例:
 
-```
+```html
 <!-- Not so great -->
 <span class="avatar">
     <img src="...">
@@ -141,16 +217,7 @@ Boolean 属性指不需要声明取值的属性。XHTML 需要每个属性声明
 在 JavaScript 文件中生成标签让内容变得更难查找，更难编辑，性能更差。应该尽量避免这种情况的出现。
 
 
-
-
-
-
-
-
-
-
-
-### 2.2 命名
+###  命名
 
 
 
@@ -225,10 +292,10 @@ IE 浏览器会混淆元素的 `id` 和 `name` 属性， `document.getElementByI
 // IE6 将显示 INPUT
 alert(document.getElementById('foo').tagName);
 </script>
-````
+```
 
 
-### 2.3 标签
+###  标签
 
 
 #### [强制] 标签名必须使用小写字母。
@@ -292,6 +359,39 @@ alert(document.getElementById('foo').tagName);
 
 详细的标签嵌套规则参见[HTML DTD](http://www.cs.tut.fi/~jkorpela/html5.dtd)中的 `Elements` 定义部分。
 
+html标签包含块级元素、内联元素，元素的类型决定嵌套的规则。
+
+> 常见块元素：div、section、ul、li、p、h1~h6等。
+
+> 常见内联元素：span、a、i、input、label、img等。
+
+- 常见嵌套
+
+```html
+<!-- right：块级元素可以内嵌其他块级元素或者内联元素 -->
+<div><h1><span></span></h1></div>
+
+<!-- right：内联元素可以内嵌其他内联元素 -->
+<a href=""><span></span></a>
+```
+错误嵌套
+
+```html
+<!-- wrong：内联元素不能嵌套其他块级元素 -->
+<span><div></div></span>
+
+<!-- wrong：p元素不能内嵌块级元素，类似元素有h1、h2、h3、h4、h5、h6、p、dt -->
+<p><div></div></p>
+<h1><div></div></h1>
+...
+<h6><div></div></h6>
+
+<!-- wrong：a标签不能内嵌a标签，这个错误会经常发生，值得重视 -->
+<a href="a.html"><a href="a.html"></a></a>
+ 
+<!-- right：内联元素内嵌块级元素 -->
+<a style="display: block;" href=""><div></div></a>
+```
 
 #### [建议] HTML 标签的使用应该遵循标签的语义。
 
@@ -322,8 +422,35 @@ alert(document.getElementById('foo').tagName);
 
 <!-- bad -->
 <div>Esprima serves as an important <span class="strong">building block</span> for some JavaScript language tools.</div>
-```
+使用html5的语义化标签。针对旧版浏览器，引用html5shiv.js进行兼容调整。
 
+<!-- bad -->
+<div class="header"></div>
+<div class="nav"></div>
+<div class="section"></div>
+<div class="article"></div>
+<div class="footer"></div>
+
+<!-- good -->
+<header class="header"></header>
+<nav class="nav"></nav>
+<section class="content-section"></section>
+<article class="article"></article>
+<footer class="footer"></footer>
+```
+一个页面只能有一个h1标签，具体与seo有关。
+
+```html
+<!-- bad -->
+<h1>我是标题一</h1>
+<h1>我是标题二</h1>
+
+<!-- good -->
+<h1>我是标题一</h1>
+<h2>我是标题二</h2>
+...
+<h6>我是标题六</h6>
+```
 
 #### [建议] 在 CSS 可以实现相同需求的情况下不得使用表格进行布局。
 
@@ -348,7 +475,7 @@ alert(document.getElementById('foo').tagName);
 
 
 
-### 2.4 属性
+### 属性
 
 
 #### [强制] 属性名必须使用小写字母。
@@ -408,145 +535,10 @@ alert(document.getElementById('foo').tagName);
 
 
 
-## 3 通用
+##  head
 
 
-### 3.1 DOCTYPE
-
-
-#### [强制] 使用 `HTML5` 的 `doctype` 来启用标准模式，建议使用大写的 `DOCTYPE`。
-
-示例：
-
-```html
-<!DOCTYPE html>
-```
-
-#### [建议] 启用 IE Edge 模式。
-
-示例：
-
-```html
-<meta http-equiv="X-UA-Compatible" content="IE=Edge">
-```
-
-#### [建议] 在 `html` 标签上设置正确的 `lang` 属性。
-
-解释：
-
-有助于提高页面的可访问性，如：让语音合成工具确定其所应该采用的发音，令翻译工具确定其翻译语言等。
-
-
-示例：
-
-```html
-<html lang="zh-CN">
-```
-
-
-### 3.2 编码
-
-
-#### [强制] 页面必须使用精简形式，明确指定字符编码。指定字符编码的 `meta` 必须是 `head` 的第一个直接子元素。
-
-解释：
-
-见 [HTML5 Charset能用吗](http://www.qianduan.net/html5-charset-can-it.html) 一文。
-
-示例：
-
-```html
-<html>
-    <head>
-        <meta charset="UTF-8">
-        ......
-    </head>
-    <body>
-        ......
-    </body>
-</html>
-```
-
-#### [建议] `HTML` 文件使用无 `BOM` 的 `UTF-8` 编码。
-
-解释：
-
-`UTF-8` 编码具有更广泛的适应性。`BOM` 在使用程序或工具处理文件时可能造成不必要的干扰。
-
-
-
-### 3.3 CSS 和 JavaScript 引入
-
-
-#### [强制] 引入 `CSS` 时必须指明 `rel="stylesheet"`。
-
-示例：
-
-```html
-<link rel="stylesheet" href="page.css">
-```
-
-
-#### [建议] 引入 `CSS` 和 `JavaScript` 时无须指明 `type` 属性。
-
-解释：
-
-`text/css` 和 `text/javascript` 是 `type` 的默认值。
-
-
-#### [建议] 展现定义放置于外部 `CSS` 中，行为定义放置于外部 `JavaScript` 中。
-
-解释：
-
-结构-样式-行为的代码分离，对于提高代码的可阅读性和维护性都有好处。
-
-
-#### [建议] 在 `head` 中引入页面需要的所有 `CSS` 资源。
-
-解释：
-
-在页面渲染的过程中，新的CSS可能导致元素的样式重新计算和绘制，页面闪烁。
-
-
-#### [建议] `JavaScript` 应当放在页面末尾，或采用异步加载。
-
-解释：
-
-将 `script` 放在页面中间将阻断页面的渲染。出于性能方面的考虑，如非必要，请遵守此条建议。
-
-
-示例：
-
-```html
-<body>
-    <!-- a lot of elements -->
-    <script src="init-behavior.js"></script>
-</body>
-```
-
-
-#### [建议] 移动环境或只针对现代浏览器设计的 Web 应用，如果引用外部资源的 `URL` 协议部分与页面相同，建议省略协议前缀。
-
-解释：
-
-使用 `protocol-relative URL` 引入 CSS，在 `IE7/8` 下，会发两次请求。是否使用 `protocol-relative URL` 应充分考虑页面针对的环境。
-
-
-示例：
-
-```html
-<script src="//s1.bdstatic.com/cache/static/jquery-1.10.2.min_f2fb5194.js"></script>
-```
-
-
-
-
-
-
-## 4 head
-
-
-### 4.1 title
+### title
 
 
 #### [强制] 页面必须包含 `title` 标签声明标题。
@@ -567,7 +559,7 @@ alert(document.getElementById('foo').tagName);
 </head>
 ```
 
-### 4.2 favicon
+### favicon
 
 
 #### [强制] 保证 `favicon` 可访问。
@@ -586,60 +578,60 @@ alert(document.getElementById('foo').tagName);
 <link rel="shortcut icon" href="path/to/favicon.ico">
 ```
 
-### 4.3 viewport
-
-
-#### [建议] 若页面欲对移动设备友好，需指定页面的 `viewport`。
-
-解释：
-
-viewport meta tag 可以设置可视区域的宽度和初始缩放大小，避免在移动设备上出现页面展示不正常。
-
-比如，在页面宽度小于 `980px` 时，若需 iOS 设备友好，应当设置 viewport 的 `width` 值来适应你的页面宽度。同时因为不同移动设备分辨率不同，在设置时，应当使用 `device-width` 和 `device-height` 变量。
-
-另外，为了使 viewport 正常工作，在页面内容样式布局设计上也要做相应调整，如避免绝对定位等。关于 viewport 的更多介绍，可以参见 [Safari Web Content Guide的介绍](https://developer.apple.com/library/mac/documentation/AppleApplications/Reference/SafariWebContent/UsingtheViewport/UsingtheViewport.html#//apple_ref/doc/uid/TP40006509-SW26)
+##  图片
 
 
 
-
-## 5 图片
-
-
-
-#### [强制] 禁止 `img` 的 `src` 取值为空。延迟加载的图片也要增加默认的 `src`。
+###  [强制] 禁止 `img` 的 `src` 取值为空。延迟加载的图片也要增加默认的 `src`。
 
 解释：
 
 `src` 取值为空，会导致部分浏览器重新加载一次当前页面，参考：<https://developer.yahoo.com/performance/rules.html#emptysrc>
 
 
-#### [建议] 避免为 `img` 添加不必要的 `title` 属性。
+###  [建议] 避免为 `img` 添加不必要的 `title` 属性。
 
 解释：
 
 多余的 `title` 影响看图体验，并且增加了页面尺寸。
 
-#### [建议] 为重要图片添加 `alt` 属性。
+###  [建议] 为重要图片添加 `alt` 属性。
 
 解释：
 
 可以提高图片加载失败时的用户体验。
 
-#### [建议] 添加 `width` 和 `height` 属性，以避免页面抖动。
+###  [建议] 添加 `width` 和 `height` 属性，以避免页面抖动。
 
-#### [建议] 有下载需求的图片采用 `img` 标签实现，无下载需求的图片采用 CSS 背景图实现。
+###  [建议] 有下载需求的图片采用 `img` 标签实现，无下载需求的图片采用 CSS 背景图实现。
 
 解释：
 
 1. 产品 logo、用户头像、用户产生的图片等有潜在下载需求的图片，以 `img` 形式实现，能方便用户下载。
 2. 无下载需求的图片，比如：icon、背景、代码使用的图片等，尽可能采用 CSS 背景图实现。
+### 图像压缩
+
+所有图片必须经过一定的压缩和优化才能发布
+
+ 
+### 背景图
+
+使用PNG格式而不是GIF格式，因为PNG格式色彩更丰富，还能提供更好的压缩比；
+ 
+### 前景图
+
+内容图片建议使用JPG，可以拥有更好地显示效果；装饰性图片使用PNG。
 
 
+### Sprite
 
-## 6 表单
+CSS Sprite是一种将数个图片合成为一张大图的技术（既可以是背景图也可以是前景图），然后通过偏移来进行图像位置选取；CSS Sprite可以减少http请求。
 
 
-### 6.1 控件标题
+##  表单
+
+
+###  控件标题
 
 
 #### [强制] 有文本标题的控件必须使用 `label` 标签将其与其标题相关联。
@@ -663,7 +655,7 @@ viewport meta tag 可以设置可视区域的宽度和初始缩放大小，避�
 ```
 
 
-### 6.2 按钮
+### 按钮
 
 
 #### [强制] 使用 `button` 元素时必须指明 `type` 属性值。
@@ -687,7 +679,7 @@ viewport meta tag 可以设置可视区域的宽度和初始缩放大小，避�
 由于浏览器兼容性问题，使用按钮的 `name` 属性会带来许多难以发现的问题。具体情况可参考[此文](http://w3help.org/zh-cn/causes/CM2001)。
 
 
-### 6.3 可访问性 (A11Y)
+### 可访问性 (A11Y)
 
 
 #### [建议] 负责主要功能的按钮在 DOM 中的顺序应靠前。
@@ -727,7 +719,7 @@ viewport meta tag 可以设置可视区域的宽度和初始缩放大小，避�
 </div>
 ```
 
-#### [建议] 当使用 JavaScript 进行表单提交时，如果条件允许，应使原生提交功能正常工作。
+#### [建议] 当使用 JavaScript 进行表单提交时，如果条件允许，应使用原生提交功能正常工作。
 
 解释：
 
@@ -757,10 +749,7 @@ viewport meta tag 可以设置可视区域的宽度和初始缩放大小，避�
 ```
 
 
-
-
-
-## 7 多媒体
+##  多媒体
 
 
 
@@ -815,11 +804,7 @@ viewport meta tag 可以设置可视区域的宽度和初始缩放大小，避�
 <object width="100" height="50" data="something.swf">DO NOT SUPPORT THIS TAG</object>
 ```
 
-
-
-
-## 8 模板中的 HTML
-
+##  模板中的 HTML
 
 #### [建议] 模板代码的缩进优先保证 HTML 代码的缩进规则。
 
@@ -891,305 +876,3 @@ viewport meta tag 可以设置可视区域的宽度和初始缩放大小，避�
 </table>
 ```
 
-
-
-
-# WOQU.com 代码规范
-
-*为 [WOQU.com](http://www.woqu.com) 前端er提供的代码规范约定，覆盖HTML、CSS、JS。*
-
-## 目录
-  1. [HTML](#html)
-     - [使用语义化标签](#semantic)
-     - [编码](#html-encode)
-     - [title的声明](#html-title)
-     - [页面&lt;h1&gt;标签唯一性](#h1-unique)
-     - [标签嵌套规则](#nested-rule)
-  1. [CSS](#css)
-     - [class命名](#class-name)
-     - [id命名](#id-name)
-     - [禁止使用无样式class来hook脚本](#class-hook-js)
-  1. [JAVASCRIPT](#javascript)
-     - [使用严格模式](#use-strict)
-     - [避免全局变量](#avoid-global-variable)
-     - [引号](#quotation)
-     - [行末分号](#semicolon)
-     - [变量命名](#js-name)
-     - [缩进](#indentation)
-
-
-## {HTML}<a name="html"></a>
-
-#### 使用语义化标签<a name="semantic"></a>
-> 使用html5的语义化标签。针对旧版浏览器，引用html5shiv.js进行兼容调整。
-
-```html
-<!-- bad -->
-<div class="header"></div>
-<div class="nav"></div>
-<div class="section"></div>
-<div class="article"></div>
-<div class="footer"></div>
-
-<!-- good -->
-<header class="header"></header>
-<nav class="nav"></nav>
-<section class="content-section"></section>
-<article class="article"></article>
-<footer class="footer"></footer>
-```
-
-#### 编码<a name="html-encode"></a>
-> 使用`utf-8`编码方式，指定字符编码的`meta`必须是`head`的第一个子元素，[原因详解](http://www.qianduan.net/html5-charset-can-it/)。
-
-```html
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8">
-        ...
-    </hed>
-    <body>
-        ...
-    </body>
-</html>
-```
-
-#### title的声明<a name="html-title"></a>
-> `title`必须作为`head`的直接子元素，并紧随`charset`声明之后。`title`中如果包含`ascii`之外的字符，浏览器需要知道字符编码类型才能进行解码，否则可能导致乱码。
-
-```html
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8">
-        <title>我趣旅行</title>
-        ...
-    </hed>
-    <body>
-        ...
-    </body>
-</html>
-```
-
-#### 页面&lt;h1&gt;标签唯一性<a name="h1-unique"></a>
-> 一个页面只能有一个h1标签，具体与seo有关。
-
-```html
-<!-- bad -->
-<h1>我是标题一</h1>
-<h1>我是标题二</h1>
-
-<!-- good -->
-<h1>我是标题一</h1>
-<h2>我是标题二</h2>
-...
-<h6>我是标题六</h6>
-```
-
-#### 标签嵌套规则<a name="nested-rule"></a>
-> html标签包含块级元素、内联元素，元素的类型决定嵌套的规则。
-
-> 常见块元素：div、section、ul、li、p、h1~h6等。
-
-> 常见内联元素：span、a、i、input、label、img等。
-
-- 常见嵌套
-
-```html
-<!-- right：块级元素可以内嵌其他块级元素或者内联元素 -->
-<div><h1><span></span></h1></div>
-
-<!-- right：内联元素可以内嵌其他内联元素 -->
-<a href=""><span></span></a>
-```
-
-
-
-- 错误嵌套
-
-```html
-<!-- wrong：内联元素不能嵌套其他块级元素 -->
-<span><div></div></span>
-
-<!-- wrong：p元素不能内嵌块级元素，类似元素有h1、h2、h3、h4、h5、h6、p、dt -->
-<p><div></div></p>
-<h1><div></div></h1>
-...
-<h6><div></div></h6>
-
-<!-- wrong：a标签不能内嵌a标签，这个错误会经常发生，值得重视 -->
-<a href="a.html"><a href="a.html"></a></a>
-```
-
-
-- 回退
-
-```html
-<!-- right：内联元素内嵌块级元素 -->
-<a style="display: block;" href=""><div></div></a>
-```
-
-
-## {CSS}<a name="css"></a>
-
-#### class命名<a name="class-name"></a>
-> 全小写，使用中横线分割。单词间使用下横线。
-
-```css
-/* bad */
-.header_left      { xxx }
-.headerLeft       { xxx }
-.HeaderLeft       { xxx }
-
-/* good */
-.header-left      { xxx }
-.usa-main         { xxx }
-.new_zealand-main { xxx }
-```
-
-#### id命名<a name="id-name"></a>
-> 小驼峰写法，中间无中横线或者下横线。
-
-```css
-/* bad */
-#Logo             { xxx }
-#header_logo      { xxx }
-#header-logo      { xxx }
-#HeaderLogo       { xxx }
-
-/* good */
-#logo             { xxx }
-#headerLogo       { xxx }
-#headerLogoWrap   { xxx }
-```
-
-#### 禁止使用无样式class来hook脚本<a name="class-hook-js"></a>
-> 禁止为元素定义无样式的class，而作为调用脚本使用。这样会造成页面class定义冗余以及增加维护难度。请使用元素自带属性或自定义属性实现。
-
-```css
-// bad
-<div class="click-alert"></div>
-$('.click-alert').click(function() {});
-
-// good
-<div data-action="clickAlert"></div>
-$('div[data-action="clickAlert"]').click(function() {});
-```
-
-## {JAVASCRIPT}<a name="javascript"></a>
-
-#### 使用严格模式<a name="use-strict"></a>
-
-> 在代码中使用严格模式`'use strict';`，详细参考[javascript严格模式详解](http://www.ruanyifeng.com/blog/2013/01/javascript_strict_mode.html)。
-
-```javascript
-
-'use strict';
-
-arr1 = new Array();          // Error
-
-var arr2 = new Array();      // Success
-
-```
-
-#### 引号<a name="quotation"></a>
-> js全部使用单引号`''`，拼html模板内使用双引号`""`。
-
-```javascript
-
-// bad
-var param = "string";
-var html = head + "<div class='main' data-id='main'></div>" + footer;
-
-// good
-var param = 'string';
-var html = head + '<div class="main" data-id="main"></div>' + footer;
-
-```
-
-#### 行末分号<a name="semicolon"></a>
-> 虽然js行末的分号不是必须的，但是为了代码风格统一，以及避免打包压缩带来的不可预测问题（真正会导致上下行解析出问题的token有5个：括号，方括号，正则开头的斜杠，加号，减号。一行开头是括号或者方括号的时候不添加分号会报错。），每行末的分号不可以省略。
-
-> js分号工具[semi](https://github.com/yyx990803/semi)
-
-```javascript
-
-// bad
-var html = head + "<div class='main' data-id='main'></div>" + footer
-alert(html)
-
-// error
-var num = 1
-(function() {
-    console.log(num)
-})
-var str = 'error message'
-
-// good
-var html = head + '<div class="main" data-id="main"></div>' + footer;
-alert(html);
-
-```
-
-#### 变量命名<a name="js-name"></a>
-> js变量命名使用小驼峰命名法，按照类型进行区分，需要突出属性特征、用途，不要使用不能清晰表达意义的缩略词。
-
-- 普通对象
-
-```javascript
-// bad
-var lib-name = 'sammy.js';
-var lib_name = 'sammy.js';
-var LibName  = 'sammy.js';
-
-// good
-var libName  = 'sammy.js';
-```
-
-- jQuery对象：`统一添加 $ 作为命名前缀，突出为jQuery对象`
-
-```javascript
-// bad
-var slider   = $('#slider');
-var side-bar = $('#sideBar');
-var side_bar = $('#sideBar');
-
-// good
-var $slider  = $('#slider');
-var $sideBar = $('#sideBar');
-```
-
-- 函数：`小驼峰写法，中间无中横线或者下横线`
-
-```javascript
-// bad
-function get_name() {}
-function get-name() {}
-
-// good
-function getName() {}
-```
-
-- 类(构造函数声明)：`首字母需要大写，驼峰写法`
-
-```javascript
-// bad
-function superClass() {}
-
-// good
-function SuperClass() {}
-```
-
-- 缩写词需要准确表明意义
-
-```javascript
-// bad
-var comm = document.getElementById('#comment');
-
-// good
-var comment = document.getElementById('#comment');
-```
-
-#### 缩进<a name="indentation"></a>
-> `空格`与`tap`不能混用。如果使用`空格`，四个`空格`代替一个缩进的位置。如果使用`tap`，请设置一个`tap`代替四个`空格`的位置长度。
