@@ -1267,7 +1267,7 @@ ul.appendChild(docFrag)
 
  
 
-## {JAVASCRIPT}<a name="javascript"></a>
+ 
 
 #### 使用严格模式<a name="use-strict"></a>
 
